@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Brain, Database, Compass, BarChart2, Zap, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
-import { services } from '@/data/content';
+import { services, processSteps } from '@/data/content';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   chart: BarChart2,
@@ -83,6 +83,13 @@ export default async function ServicePage({
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+          {/* dataSourceNote */}
+          {'dataSourceNote' in service && service.dataSourceNote && (
+            <div className="mb-10 p-6 rounded-2xl border border-indigo-500/20 bg-indigo-500/5">
+              <p className="text-gray-300 text-sm leading-relaxed">{service.dataSourceNote}</p>
+            </div>
+          )}
+
           {/* featureDetails — rich cards */}
           {'featureDetails' in service && service.featureDetails && service.featureDetails.length > 0 ? (
             <div className="mb-12">
@@ -115,6 +122,25 @@ export default async function ServicePage({
             </div>
           )}
 
+          {/* Methods — market-analysis specific */}
+          {'methods' in service && service.methods && service.methods.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-white mb-8">Методы расчёта ёмкости рынка</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {service.methods.map((m, i) => (
+                  <div
+                    key={m.title}
+                    className="p-6 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] hover:border-indigo-500/30 transition-colors"
+                  >
+                    <span className="text-xs font-mono text-indigo-500/50 mb-3 block">0{i + 1}</span>
+                    <h3 className="text-white font-semibold mb-2">{m.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{m.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Results */}
           <div className="p-8 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] mb-12">
             <h2 className="text-xl font-bold text-white mb-6">Что вы получите</h2>
@@ -134,6 +160,27 @@ export default async function ServicePage({
             >
               Обсудить проект <ArrowRight size={16} />
             </Link>
+          </div>
+
+          {/* How we work */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-white mb-8">Как мы работаем</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {processSteps.map((step) => (
+                <div
+                  key={step.step}
+                  className="flex gap-4 p-5 rounded-xl border border-[#2A2A3E] bg-[#0F0F1A]"
+                >
+                  <span className="text-2xl font-bold text-indigo-500/30 font-mono shrink-0 leading-tight">
+                    {step.step}
+                  </span>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">{step.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Other services */}

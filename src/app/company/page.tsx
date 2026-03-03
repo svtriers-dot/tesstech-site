@@ -1,34 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { company, stats } from '@/data/content';
-import { ArrowRight, Users, Target, Award } from 'lucide-react';
+import { company, stats, principles } from '@/data/content';
+import { ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'О компании',
   description:
     'Tess Technology — 10+ лет на рынке аналитики, 300+ кейсов, команда международного уровня.',
 };
-
-const values = [
-  {
-    icon: Target,
-    title: 'Точность',
-    description:
-      'Не берёмся за все проекты подряд. Работаем только там, где уверены в результате.',
-  },
-  {
-    icon: Users,
-    title: 'Экспертиза',
-    description:
-      'Команда из 20+ экспертов — математики, аналитики, разработчики и отраслевые специалисты.',
-  },
-  {
-    icon: Award,
-    title: 'Результат',
-    description:
-      '300+ успешных кейсов от малого бизнеса до компаний международного уровня. Первые в ряде исследований на российском рынке.',
-  },
-];
 
 export default function CompanyPage() {
   return (
@@ -111,26 +90,23 @@ export default function CompanyPage() {
         </div>
       </section>
 
-      {/* Values */}
+      {/* Principles */}
       <section className="py-16 bg-[#07070C]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white mb-10 text-center">Наши принципы</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {values.map((v) => {
-              const Icon = v.icon;
-              return (
-                <div
-                  key={v.title}
-                  className="p-7 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] text-center"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center mx-auto mb-4">
-                    <Icon size={22} className="text-indigo-400" />
-                  </div>
-                  <h3 className="text-white font-bold text-lg mb-3">{v.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{v.description}</p>
-                </div>
-              );
-            })}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white">Принципы Tess Technology</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {principles.map((p, i) => (
+              <div
+                key={p.title}
+                className="p-7 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] hover:border-indigo-500/30 transition-colors"
+              >
+                <span className="text-xs font-mono text-indigo-500/50 mb-3 block">0{i + 1}</span>
+                <h3 className="text-white font-bold text-lg mb-3">{p.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{p.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
