@@ -53,7 +53,7 @@ export default async function ServicePage({
             href="/services"
             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-indigo-400 transition-colors mb-8"
           >
-            <ArrowLeft size={14} /> Все услуги
+            <ArrowLeft size={14} /> Все продукты
           </Link>
 
           <div className="max-w-3xl">
@@ -62,8 +62,19 @@ export default async function ServicePage({
                 <Icon size={26} className="text-indigo-400" />
               </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">{service.title}</h1>
+            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">{service.title}</h1>
+            {'subtitle' in service && service.subtitle && (
+              <p className="text-indigo-400 text-lg font-medium mb-5">{service.subtitle}</p>
+            )}
             <p className="text-gray-400 text-xl leading-relaxed">{service.fullDescription}</p>
+            <div className="mt-8">
+              <Link
+                href="/contacts"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25"
+              >
+                Заказать услугу <ArrowRight size={16} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -71,9 +82,27 @@ export default async function ServicePage({
       {/* Content */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* Features */}
-            <div className="p-8 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A]">
+
+          {/* featureDetails — rich cards */}
+          {'featureDetails' in service && service.featureDetails && service.featureDetails.length > 0 ? (
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-white mb-8">Мы предлагаем</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {service.featureDetails.map((fd, i) => (
+                  <div
+                    key={fd.title}
+                    className="p-6 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] hover:border-indigo-500/30 transition-colors"
+                  >
+                    <span className="text-xs font-mono text-indigo-500/50 mb-3 block">0{i + 1}</span>
+                    <h3 className="text-white font-semibold mb-2">{fd.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{fd.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            /* fallback — simple features list */
+            <div className="p-8 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] mb-8">
               <h2 className="text-xl font-bold text-white mb-6">Что включает услуга</h2>
               <ul className="space-y-4">
                 {service.features.map((f) => (
@@ -84,35 +113,32 @@ export default async function ServicePage({
                 ))}
               </ul>
             </div>
+          )}
 
-            {/* Results */}
-            <div className="p-8 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A]">
-              <h2 className="text-xl font-bold text-white mb-6">Что вы получите</h2>
-              <ul className="space-y-4">
-                {service.results.map((r) => (
-                  <li key={r} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                    </div>
-                    <span className="text-gray-300 text-sm">{r}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8 pt-6 border-t border-[#2A2A3E]">
-                <Link
-                  href="/contacts"
-                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all duration-200"
-                >
-                  Обсудить проект <ArrowRight size={16} />
-                </Link>
-              </div>
-            </div>
+          {/* Results */}
+          <div className="p-8 rounded-2xl border border-[#2A2A3E] bg-[#0F0F1A] mb-12">
+            <h2 className="text-xl font-bold text-white mb-6">Что вы получите</h2>
+            <ul className="space-y-4 mb-8">
+              {service.results.map((r) => (
+                <li key={r} className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-gray-300 text-sm">{r}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/contacts"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all duration-200"
+            >
+              Обсудить проект <ArrowRight size={16} />
+            </Link>
           </div>
 
           {/* Other services */}
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">Другие услуги</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Другие продукты</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {otherServices.map((s) => {
                 const OtherIcon = iconMap[s.icon] || Brain;
