@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Brain, Database, Compass, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { Brain, Database, Compass, BarChart2, Zap, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { services } from '@/data/content';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  chart: BarChart2,
+  zap: Zap,
   brain: Brain,
   database: Database,
   compass: Compass,

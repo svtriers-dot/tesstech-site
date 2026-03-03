@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Brain, Database, Compass, ArrowRight } from 'lucide-react';
+import { Brain, Database, Compass, BarChart2, Zap, ArrowRight } from 'lucide-react';
 import { services } from '@/data/content';
 
 export const metadata: Metadata = {
-  title: 'Услуги',
+  title: 'Продукты',
   description:
-    'Математическое моделирование и ML, базы данных, стратегические сессии — услуги Tess Technology.',
+    'Анализ технологических рынков, операционная эффективность, матмоделирование и ML — продукты Tess Technology.',
 };
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  chart: BarChart2,
+  zap: Zap,
   brain: Brain,
   database: Database,
   compass: Compass,
