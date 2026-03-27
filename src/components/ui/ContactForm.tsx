@@ -7,11 +7,13 @@ import { z } from 'zod';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 
 const schema = z.object({
-  name: z.string().min(2, 'Введите имя (минимум 2 символа)'),
-  email: z.string().email('Введите корректный email'),
-  phone: z.string().optional(),
-  company: z.string().optional(),
-  message: z.string().min(10, 'Опишите задачу подробнее (минимум 10 символов)'),
+  name:    z.string().min(2, 'Введите имя (минимум 2 символа)').max(100, 'Имя слишком длинное'),
+  email:   z.string().email('Введите корректный email').max(254, 'Email слишком длинный'),
+  phone:   z.string().max(30, 'Телефон слишком длинный').optional(),
+  company: z.string().max(200, 'Название компании слишком длинное').optional(),
+  message: z.string().min(10, 'Опишите задачу подробнее (минимум 10 символов)').max(2000, 'Сообщение слишком длинное (максимум 2000 символов)'),
+  // Honeypot: поле-ловушка для ботов — должно оставаться пустым
+  _honey:  z.string().max(0).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -24,8 +26,11 @@ export default function ContactForm() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  const messageValue = watch('message') ?? '';
 
   const onSubmit = async (data: FormData) => {
     setStatus('loading');
@@ -71,6 +76,21 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/*
+        Honeypot-поле: скрыто от пользователя визуально и через aria.
+        Боты заполняют его автоматически — сервер отклоняет такие заявки.
+      */}
+      <div aria-hidden="true" style={{ display: 'none' }}>
+        <label htmlFor="contact_website">Website</label>
+        <input
+          {...register('_honey')}
+          id="contact_website"
+          type="text"
+          autoComplete="off"
+          tabIndex={-1}
+        />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm text-gray-400 mb-1.5">
@@ -79,6 +99,7 @@ export default function ContactForm() {
           <input
             {...register('name')}
             placeholder="Иван Иванов"
+            maxLength={100}
             className="w-full px-4 py-3 rounded-xl bg-[#0A0A0F] border border-[#2A2A3E] text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors"
           />
           {errors.name && (
@@ -93,6 +114,7 @@ export default function ContactForm() {
             {...register('email')}
             type="email"
             placeholder="ivan@company.ru"
+            maxLength={254}
             className="w-full px-4 py-3 rounded-xl bg-[#0A0A0F] border border-[#2A2A3E] text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors"
           />
           {errors.email && (
@@ -107,6 +129,7 @@ export default function ContactForm() {
           <input
             {...register('phone')}
             placeholder="+7 (900) 000-00-00"
+            maxLength={30}
             className="w-full px-4 py-3 rounded-xl bg-[#0A0A0F] border border-[#2A2A3E] text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors"
           />
         </div>
@@ -115,18 +138,25 @@ export default function ContactForm() {
           <input
             {...register('company')}
             placeholder="Название компании"
+            maxLength={200}
             className="w-full px-4 py-3 rounded-xl bg-[#0A0A0F] border border-[#2A2A3E] text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm text-gray-400 mb-1.5">
-          Задача / вопрос <span className="text-red-400">*</span>
-        </label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="block text-sm text-gray-400">
+            Задача / вопрос <span className="text-red-400">*</span>
+          </label>
+          <span className={`text-xs ${messageValue.length > 1800 ? 'text-red-400' : 'text-gray-600'}`}>
+            {messageValue.length}/2000
+          </span>
+        </div>
         <textarea
           {...register('message')}
           rows={5}
+          maxLength={2000}
           placeholder="Опишите вашу задачу или вопрос..."
           className="w-full px-4 py-3 rounded-xl bg-[#0A0A0F] border border-[#2A2A3E] text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors resize-none"
         />
